@@ -53,7 +53,6 @@ public class Cliente {
 public class Sincronizador1 {
 
     private static final LamportClock clock = new LamportClock();
-
     public static void main(String[] args) throws IOException {
         // Crear servidor TCP
         ServerSocket servidor = new ServerSocket(136);
