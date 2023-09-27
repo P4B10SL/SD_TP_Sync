@@ -1,23 +1,73 @@
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.*;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
+/*
+public class Cliente {
+
+    private static final LamportClock clock = new LamportClock();
+
+    public static void main(String[] args) throws IOException {
+        // Crear socket TCP
+        Socket cliente = new Socket("192.168.4.77", 8080);
+
+        // Enviar timestamp al servidor
+        OutputStream salida = cliente.getOutputStream();
+        salida.write(Integer.toString(clock.getTimestamp()).getBytes());
+
+        // Recibir timestamp actualizado del servidor
+        InputStream entrada = cliente.getInputStream();
+        int timestampServidor = Integer.parseInt(new String(entrada.readAllBytes()));
+
+        System.out.println(Integer.toString(timestampServidor));
+
+        // Actualizar reloj lógico
+        clock.increment();
+        clock.waitUntil(timestampServidor);
+
+        // Iniciar proceso local
+        Thread threadLocal = new Thread(() -> {
+            // Ejecutar proceso local
+            System.out.println("Proceso local iniciado");
+        });
+        threadLocal.start();
+
+        try {
+            threadLocal.join();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        // Cerrar socket TCP
+        cliente.close();
+    }
+}
+*/
 public class Sincronizador1 {
 
     private static final LamportClock clock = new LamportClock();
 
-    public static void main(String[] args) throws IOException, InterruptedException {
+    public static void main(String[] args) throws IOException {
         // Crear servidor TCP
-        ServerSocket servidor = new ServerSocket(8080);
+        ServerSocket servidor = new ServerSocket(136);
 
         // Aceptar conexión de la máquina 2
         Socket cliente2 = servidor.accept();
 
+        System.out.println("ALGUIEN SE CONECTÓ");
+
         // Recibir timestamp de la máquina 2
         InputStream entrada2 = cliente2.getInputStream();
         int timestamp2 = Integer.parseInt(new String(entrada2.readAllBytes()));
+
+        System.out.println(timestamp2);
 
         // Actualizar reloj lógico
         clock.increment();
@@ -94,9 +144,25 @@ public class Sincronizador1 {
         });
         thread4.start();
 
-        thread1.join();
-        thread2.join();
-        thread3.join();
-        thread4.join();
+        try {
+            thread1.join();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            thread2.join();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            thread3.join();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            thread4.join();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
