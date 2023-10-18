@@ -116,18 +116,10 @@ public class SistemaComunicaciones {
             String portString = "732";
             Integer port= Integer.parseInt(portString);
             serverSocket = new ServerSocket(port);
-            // while (true) {
             Socket clientSocket = serverSocket.accept();
             System.out.println("EN EL RECEIVE");
             // Creacion de los Input y Output Streams del cliente
             BufferedReader input = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-            System.out.println("INPUT SERVER:"+ input.readLine());
-            PrintWriter output = new PrintWriter(clientSocket.getOutputStream(), true);
-            // Lectura del input del cliente y se lo envia devuelta como output
-            // String line;
-            //   texto_console = new DataInputStream(System.in);
-            // String texto = texto_console.readLine();
-            output.println(input.readLine());
             confirmacion=input.readLine();
             // Cierre del socket cliente
             clientSocket.close();
