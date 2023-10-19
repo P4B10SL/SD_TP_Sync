@@ -5,7 +5,8 @@ import java.io.IOException;
 public class Main {
 
     public static void main(String[] args) {
-        SistemaComunicaciones Coms= new SistemaComunicaciones();
+        SistemaComunicaciones Coms = new SistemaComunicaciones();
+        /*
         try {
             //En cliente ingresa el ip del servidor y viceversa
             DataInputStream ipConsola;
@@ -26,11 +27,11 @@ public class Main {
                 System.out.println(contadorActualizadoCliente);
             }
             */
+        /*
             //Servidor
             while (true) {
-                System.out.println("HASTA ACA LLEGA");
                 String recibidoTCPServidor = Coms.ReceiveTCP();
-                System.out.println("Esto es lo que recibió: "+ recibidoTCPServidor);
+                System.out.println("Timestamp recibido: "+ recibidoTCPServidor);
                 Integer contadorRecibido = Integer.parseInt(recibidoTCPServidor);
                 String contadorActualizado = Integer.toString(contadorRecibido + 1);
                 Coms.SendTCP(contadorActualizado);
@@ -43,5 +44,8 @@ public class Main {
             System.out.print(e);
         }
     }
+         */
+        Coms.LamportServidor();
 
+    }
 }

@@ -1,5 +1,8 @@
 import java.io.*;
 import java.net.*;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class SistemaComunicaciones {
     String ipDestino;
@@ -132,4 +135,164 @@ public class SistemaComunicaciones {
         }
         return confirmacion;
     }
+
+    public void LamportServidor()
+    {
+        SistemaComunicaciones Coms= new SistemaComunicaciones();
+        try {
+            //En cliente ingresa el ip del servidor y viceversa
+            DataInputStream ipConsola;
+            System.out.println("Ingrese la dirección IP a la que se desea conectar:");
+            ipConsola=new DataInputStream(System.in);
+            String ipDestino=ipConsola.readLine();
+            Coms.init(ipDestino);
+            //Servidor
+            while (true) {
+                String recibidoTCPServidor = Coms.ReceiveTCP();
+                System.out.println("Timestamp recibido: "+ recibidoTCPServidor);
+                Integer contadorRecibido = Integer.parseInt(recibidoTCPServidor);
+                String contadorActualizado = Integer.toString(contadorRecibido + 1);
+                Coms.SendTCP(contadorActualizado);
+                System.out.println(contadorActualizado);
+            }
+        }
+        catch (IOException e)
+        {
+            System.out.print("Error al ingresar el mensaje");
+            System.out.print(e);
+        }
+    }
+    public void LamportCliente()
+    {
+        SistemaComunicaciones Coms= new SistemaComunicaciones();
+        try {
+            //En cliente ingresa el ip del servidor y viceversa
+            DataInputStream ipConsola;
+            System.out.println("Ingrese la dirección IP a la que se desea conectar:");
+            ipConsola=new DataInputStream(System.in);
+            String ipDestino=ipConsola.readLine();
+            Coms.init(ipDestino);
+            //Cliente
+            String contador= "0";
+            Coms.SendTCP(contador);
+            while (true) {
+                String recibidoTCPCliente = Coms.ReceiveTCP();
+                Integer contadorRecibidoCliente = Integer.parseInt(recibidoTCPCliente);
+                String contadorActualizadoCliente = Integer.toString(contadorRecibidoCliente + 1);
+                Coms.SendTCP(contadorActualizadoCliente);
+                System.out.println(contadorActualizadoCliente);
+            }
+        }
+        catch (IOException e)
+        {
+            System.out.print("Error al ingresar el mensaje");
+            System.out.print(e);
+        }
+
+    }
+    public void BerkeleyCliente()
+    {
+        SistemaComunicaciones Coms= new SistemaComunicaciones();
+        try {
+            //En cliente ingresa el ip del servidor y viceversa
+            DataInputStream ipConsola;
+            System.out.println("Ingrese la dirección IP a la que se desea conectar:");
+            ipConsola=new DataInputStream(System.in);
+            String ipDestino=ipConsola.readLine();
+            LocalDateTime now = LocalDateTime.now();
+            // Formatea el timestamp en formato de fecha y hora
+            String timestampFormateado = now.format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
+            System.out.println(timestampFormateado);
+            Coms.init(ipDestino);
+            //Cliente
+            Coms.SendTCP(timestampFormateado);
+            while (true) {
+                String diferenciaRecibida = Coms.ReceiveTCP();
+                Integer diferenciaFormateada= Integer.parseInt(diferenciaRecibida);
+                String timestampFormateadoCorregido;
+               if (diferenciaFormateada >=0) {
+                   // Suma el parsedDateTime a now
+                   LocalDateTime corregido= now.plusNanos(diferenciaFormateada * 1_000_000);
+                    timestampFormateadoCorregido = corregido.format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
+               } else{
+                   LocalDateTime corregido= now.minusNanos(diferenciaFormateada * 1_000_000);
+                    timestampFormateadoCorregido = corregido.format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
+               }
+                Coms.SendTCP(timestampFormateadoCorregido);
+                System.out.println(timestampFormateadoCorregido);
+            }
+        }
+        catch (IOException e)
+        {
+            System.out.print("Error al ingresar el mensaje");
+            System.out.print(e);
+        }
+
+    }
+    public void BerkeleyServidor()
+    {
+        SistemaComunicaciones Coms= new SistemaComunicaciones();
+        try {
+            //En cliente ingresa el ip del servidor y viceversa
+            DataInputStream ipConsola;
+            System.out.println("Ingrese la dirección IP a la que se desea conectar:");
+            ipConsola=new DataInputStream(System.in);
+            String ipDestino=ipConsola.readLine();
+            LocalDateTime now = LocalDateTime.now();
+            // Formatea el timestamp en formato de fecha y hora
+            String timestampFormateado = now.format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
+            System.out.println(timestampFormateado);
+            Coms.init(ipDestino);
+            //Cliente
+            Coms.SendTCP(timestampFormateado);
+            while (true) {
+                String diferenciaRecibida = Coms.ReceiveTCP();
+                Integer diferenciaFormateada= Integer.parseInt(diferenciaRecibida);
+                String timestampFormateadoCorregido;
+                if (diferenciaFormateada >=0) {
+                    // Suma el parsedDateTime a now
+                    LocalDateTime corregido= now.plusNanos(diferenciaFormateada * 1_000_000);
+                    timestampFormateadoCorregido = corregido.format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
+                } else{
+                    LocalDateTime corregido= now.minusNanos(diferenciaFormateada * 1_000_000);
+                    timestampFormateadoCorregido = corregido.format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
+                }
+                Coms.SendTCP(timestampFormateadoCorregido);
+                System.out.println(timestampFormateadoCorregido);
+            }
+        }
+        catch (IOException e)
+        {
+            System.out.print("Error al ingresar el mensaje");
+            System.out.print(e);
+        }
+    }
+    public String ReceiveTCP_Berkeley(){
+        ServerSocket serverSocket;
+        PrintStream data_out_conex;
+        DataInputStream data_in_consola;
+        DataInputStream texto_console;
+        String confirmacion;
+        try  {
+            String portString = "732";
+            Integer port= Integer.parseInt(portString);
+            serverSocket = new ServerSocket(port);
+            Socket clientSocket = serverSocket.accept();
+            System.out.println("EN EL RECEIVE");
+            // Creacion de los Input y Output Streams del cliente
+            BufferedReader input = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+            //confirmacion=input.readLine();
+            confirmacion= clientSocket.getInetAddress().toString();
+            // Cierre del socket cliente
+            clientSocket.close();
+            serverSocket.close();
+            System.out.println("Cliente desconectado");
+            //}
+        } catch (IOException e) {
+            System.out.println(e);
+            confirmacion="ERROR"+e.toString();
+        }
+        return confirmacion;
+    }
+
 }
