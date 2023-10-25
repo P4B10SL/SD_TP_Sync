@@ -295,4 +295,76 @@ public class SistemaComunicaciones {
         return confirmacion;
     }
 
+
+    public static void CristianCliente() {
+        SistemaComunicaciones Coms = new SistemaComunicaciones();
+        try {
+            //En cliente ingresa el ip del servidor y viceversa
+            DataInputStream ipConsola;
+            System.out.println("Ingrese LA dirección IP a la que se desea conectar:");
+            ipConsola = new DataInputStream(System.in);
+            String ipDestino = ipConsola.readLine();
+            Coms.init(ipDestino);
+            String mensaje = "Sincronizar";
+            //Acá dice usa el SendTCP, para mi sería un receiveTCP pero así decía en Bard
+            String respuesta = Coms.SendTCP(mensaje);
+
+            // 2. El servidor responde con su tiempo actual.
+            if (respuesta.equals("Enviado")) {
+                // 3. El cliente calcula la diferencia entre su tiempo actual y el tiempo del servidor.
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                LocalDateTime tiempoActual = LocalDateTime.now();
+                LocalDateTime tiempoServidor = LocalDateTime.parse(respuesta, formatter);
+                Duration diferencia = Duration.between(tiempoActual, tiempoServidor);
+
+                // 4. El cliente ajusta su reloj en consecuencia.
+                tiempoActual = tiempoActual.plus(diferencia);
+                System.out.println("Tiempo actualizado: " + tiempoActual);
+            } else {
+                System.out.println("Error al sincronizar con el servidor.");
+            }
+        }
+        catch (IOException e)
+        {
+            System.out.print("Error al ingresar el mensaje");
+            System.out.print(e);
+        }
+
+    }
+
+    public static void CristianServidor()
+    {
+        try{
+            // 1. El servidor escucha las solicitudes de sincronización de los clientes.
+            ServerSocket serverSocket = new ServerSocket(732);
+
+            // 2. El servidor responde con su tiempo actual.
+            while (true) {
+                //Acá creo que hay q usar el receive pq le puse el send, sacqué el socket.
+                Socket socket = serverSocket.accept();
+                BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                String mensaje = input.readLine();
+
+                if (mensaje.equals("Sincronizar")) {
+                    // Obtener el tiempo actual del servidor.
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                    LocalDateTime tiempoActual = LocalDateTime.now();
+                    String respuesta = tiempoActual.format(formatter);
+
+                    // Enviar la respuesta al cliente.
+                    //No se usaría el sendTCP? o al ser socket es distinto y ya lo recive
+                    PrintStream output = new PrintStream(socket.getOutputStream());
+                    output.println(respuesta);
+                }
+
+                socket.close();
+            }
+        }
+        catch (IOException e)
+        {
+            System.out.print("Error al ingresar el mensaje");
+            System.out.print(e);
+        }
+    }
+
 }
