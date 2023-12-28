@@ -136,6 +136,7 @@ public class SistemaComunicaciones {
         return confirmacion;
     }
 
+    // ----------------- Metodos para los Lamport -----------------
     public void LamportServidor()
     {
         SistemaComunicaciones Coms= new SistemaComunicaciones();
@@ -190,6 +191,8 @@ public class SistemaComunicaciones {
         }
 
     }
+
+    // ----------------- Metodos para Berkeley -----------------
     public void BerkeleyCliente()
     {
         SistemaComunicaciones Coms= new SistemaComunicaciones();
@@ -296,6 +299,7 @@ public class SistemaComunicaciones {
     }
 
 
+    // ----------------- Metodos para Cristian -----------------
     public static void CristianCliente() {
         SistemaComunicaciones Coms = new SistemaComunicaciones();
         try {
