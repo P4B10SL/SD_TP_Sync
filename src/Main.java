@@ -46,6 +46,6 @@ public class Main {
     }
          */
         Coms.LamportServidor();
-
+        Coms.LamportCliente();
     }
 }
