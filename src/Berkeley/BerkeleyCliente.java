@@ -7,7 +7,7 @@ import java.net.Socket;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class Cliente {
+public class BerkeleyCliente {
     public static void main(String[] args) {
 String ipServidor; // IP del servidor
     int puerto = 732; // Puerto del servidor

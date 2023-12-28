@@ -11,7 +11,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Servidor {
+public class BerkeleyServidor {
     public static void main(String[] args) {
 List<Integer> timeDifferences = new ArrayList<>();
     ServerSocket serverSocket = null;
